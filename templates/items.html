@@ -1,0 +1,21 @@
+<html>
+<body>
+
+<h1>Items</h1>
+
+{% if items %}
+    {% for item in items %}
+    {{ item.name }}
+    <br>
+    <a href = '#'>Edit</a>
+    <br>
+    <a href = '#'>Delete</a>
+    <br>
+    <br>
+    {% endfor %}
+{% else %}
+    <h3>No items found!</h3>
+{% endif %}
+
+</body>
+</html>

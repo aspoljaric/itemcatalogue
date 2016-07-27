@@ -1,0 +1,21 @@
+<html>
+<body>
+
+<h1>Categories</h1>
+
+{% if categories %}
+    {% for category in categories %}
+    {{ category.name }}
+    <br>
+    <a href = '#'>Edit</a>
+    <br>
+    <a href = '#'>Delete</a>
+    <br>
+    <br>
+    {% endfor %}
+{% else %}
+    <h3>No categories found!</h3>
+{% endif %}
+
+</body>
+</html>
