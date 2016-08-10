@@ -15,6 +15,13 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
 
+    @property
+    def serialize(self):
+    # Returns object data in easily serializeable format
+        return {
+            'id': self.id,
+            'name': self.name,
+            }
 
 class Item(Base):
     __tablename__ = 'item'
@@ -27,6 +34,16 @@ class Item(Base):
     category = relationship(
         Category, backref=backref('children', cascade='all,delete'))
 
+    @property
+    def serialize(self):
+    # Returns object data in easily serializeable format
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'picture': self.picture,
+            'category_id': self.category_id,
+            }
 
 engine = create_engine('sqlite:///categories.db')
 

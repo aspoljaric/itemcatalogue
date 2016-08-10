@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, jsonify
 app = Flask(__name__)
 
 from database import Base, Category, Item
@@ -135,9 +135,32 @@ def deleteItem(category_id, item_id):
         else:
             item = session.query(Item).filter_by(id=item_id).one()
             return render_template('delete-item.html', item=item)
-
-
 # Item operations END
+
+
+# JSON API Endpoints
+@app.route('/catalogue/JSON')
+def catagoriesJSON():
+    with session_scope() as session:
+        categories = session.query(Category).all()
+        return jsonify(Categories=[category.serialize
+                                   for category in categories])
+
+
+@app.route('/catalogue/<int:category_id>/items/JSON')
+def categoryItemsJSON(category_id):
+    with session_scope() as session:
+        items = session.query(Item).filter_by(category_id=category_id).all()
+        return jsonify(Items=[item.serialize for item in items])
+
+
+@app.route('/catalogue/<int:category_id>/item/<int:item_id>/JSON')
+def itemInCategoryJSON(category_id, item_id):
+    with session_scope() as session:
+        item = session.query(Item).filter_by(
+            category_id=category_id).filter_by(id=item_id).one()
+        return jsonify(Item=[item.serialize])
+# JSON API Endpoints END
 
 if __name__ == '__main__':
     app.debug = True
