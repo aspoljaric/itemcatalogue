@@ -11,7 +11,7 @@
     <p>Picture:</p>
     <input type='file' name='picture' accept='image/*'>
     <input type = 'submit' value='Edit'>
-    <a href = '#'>Cancel</a>
+    <a href = '{{ url_for('showItems', category_id=item.category_id) }}'>Cancel</a>
 </form>
 
 </body>

@@ -3,7 +3,7 @@
 
 <h1>New Item</h1>
 
-<form action='#' method='post'>
+<form action='{{ url_for('newItem', category_id=category.id) }}' method='post'>
     <p>Name:</p>
     <input type = 'text' size='30' name='name'>
     <p>Description:</p>
@@ -11,7 +11,7 @@
     <p>Picture:</p>
     <input type='file' name='picture' accept='image/*'>
     <input type = 'submit' value='Create'>
-    <a href = '#'>Cancel</a>
+    <a href = '{{ url_for('showItems', category_id=category.id) }}'>Cancel</a>
 </form>
 
 </body>
