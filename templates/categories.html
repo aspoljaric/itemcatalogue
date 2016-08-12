@@ -10,10 +10,13 @@
     {% for category in categories %}
     <a href = '{{ url_for('showItems', category_id=category.id)}}'>{{ category.name }}</a>
     <br>
+    {% if category.user_id == loggedin_user_id %}
     <a href = '{{ url_for('editCategory', category_id=category.id) }}'>Edit</a>
     <br>
     <a href = '{{ url_for('deleteCategory', category_id=category.id) }}'>Delete</a>
     <br>
+    <br>
+    {% endif %}
     <br>
     {% endfor %}
 {% else %}

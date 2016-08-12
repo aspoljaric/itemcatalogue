@@ -3,19 +3,22 @@
 
 <h1>Items</h1>
 
+{% if category.user_id == loggedin_user_id %}
 <a href = '{{ url_for('newItem', category_id=category_id) }}'>Create new item</a>
+{% endif %}
 <br>
 
 {% if items %}
     {% for item in items %}
     {{ item.name }}
+    {% if item.user_id == loggedin_user_id %}
     <br>
     <a href = '{{ url_for('editItem', category_id=item.category.id, item_id=item.id) }}'>Edit</a>
     <br>
     <a href = '{{ url_for('deleteItem', category_id=item.category.id, item_id=item.id) }}'>Delete</a>
     <br>
     <br>
-
+    {% endif %}
     <img src="{{ item.picture }}"/>
 
     {% endfor %}

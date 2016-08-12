@@ -1,6 +1,6 @@
 from db_connection import *
 from flask import Flask, render_template, url_for, request
-from flask import redirect, flash, jsonify
+from flask import redirect, flash, jsonify, abort
 from flask import session as login_session
 import random
 import string
@@ -19,14 +19,24 @@ app = Flask(__name__)
 def showCatagories():
     with session_scope() as session:
         categories = session.query(Category).all()
-        return render_template('categories.html', categories=categories)
+        if 'user_id' not in login_session:
+            loggedin_user_id = None
+        else:
+            loggedin_user_id = login_session['user_id']
+        return render_template('categories.html', categories=categories,
+                               loggedin_user_id=loggedin_user_id)
 
 
 @app.route('/catalogue/new', methods=['GET', 'POST'])
 def newCategory():
+    if 'username' not in login_session:
+        return redirect(url_for('showLogin'))
     with session_scope() as session:
         if request.method == 'POST':
-            newCategory = Category(name=request.form['name'])
+            if login_session['state'] != request.form.get('_csrf_token'):
+                abort(403)
+            newCategory = Category(
+                name=request.form['name'], user_id=login_session['user_id'])
             session.add(newCategory)
             return redirect(url_for('showCatagories'))
         else:
@@ -35,81 +45,127 @@ def newCategory():
 
 @app.route('/catalogue/<int:category_id>/edit', methods=['GET', 'POST'])
 def editCategory(category_id):
+    if 'username' not in login_session:
+        return redirect(url_for('showLogin'))
     with session_scope() as session:
         category = session.query(Category).filter_by(id=category_id).one()
-        if request.method == 'POST':
-            category.name = request.form['name']
-            session.add(category)
-            return redirect(url_for('showCatagories'))
+        if category.user_id == login_session['user_id']:
+            if request.method == 'POST':
+                if login_session['state'] != request.form.get('_csrf_token'):
+                    abort(403)
+                category.name = request.form['name']
+                session.add(category)
+                return redirect(url_for('showCatagories'))
+            else:
+                return render_template('edit-category.html', category=category)
         else:
-            return render_template('edit-category.html', category=category)
+            return redirect(url_for('showCatagories'))
 
 
 @app.route('/catalogue/<int:category_id>/delete', methods=['GET', 'POST'])
 def deleteCategory(category_id):
+    if 'username' not in login_session:
+        return redirect(url_for('showLogin'))
     with session_scope() as session:
         category = session.query(Category).filter_by(id=category_id).one()
-        if request.method == 'POST':
-            if category is not None:
-                session.delete(category)
-                return redirect(url_for('showCatagories'))
+        if category.user_id == login_session['user_id']:
+            if request.method == 'POST':
+                if login_session['state'] != request.form.get('_csrf_token'):
+                    abort(403)
+                if category is not None:
+                    session.delete(category)
+                    return redirect(url_for('showCatagories'))
+            else:
+                return render_template('delete-category.html',
+                                       category=category)
         else:
-            return render_template('delete-category.html', category=category)
+            return redirect(url_for('showCatagories'))
 
 
 @app.route('/catalogue/<int:category_id>')
 @app.route('/catalogue/<int:category_id>/items')
 def showItems(category_id):
     with session_scope() as session:
+        if 'user_id' not in login_session:
+            loggedin_user_id = None
+        else:
+            loggedin_user_id = login_session['user_id']
         category = session.query(Category).filter_by(id=category_id).one()
         items = session.query(Item).filter_by(category_id=category_id).all()
         return render_template('items.html', items=items,
-                               category_id=category_id)
+                               category_id=category_id,
+                               loggedin_user_id=loggedin_user_id,
+                               category=category)
 
 
 @app.route('/catalogue/<int:category_id>/item/new', methods=['GET', 'POST'])
 def newItem(category_id):
+    if 'username' not in login_session:
+        return redirect(url_for('showLogin'))
     with session_scope() as session:
-        if request.method == 'POST':
-            newItem = Item(name=request.form['name'],
-                           description=request.form['description'],
-                           category_id=category_id)
-            #picture_url = request.values['picture']
-            # newItem.picture.from_file(urlopen(picture_url))
-            session.add(newItem)
-            return redirect(url_for('showItems', category_id=category_id))
+        category = session.query(Category).filter_by(id=category_id).one()
+        if category.user_id == login_session['user_id']:
+            if request.method == 'POST':
+                if login_session['state'] != request.form.get('_csrf_token'):
+                    abort(403)
+                newItem = Item(name=request.form['name'],
+                               description=request.form['description'],
+                               category_id=category_id,
+                               user_id=login_session['user_id'])
+                #picture_url = request.values['picture']
+                # newItem.picture.from_file(urlopen(picture_url))
+                session.add(newItem)
+                return redirect(url_for('showItems', category_id=category_id))
+            else:
+                category = session.query(
+                    Category).filter_by(id=category_id).one()
+                return render_template('new-item.html', category=category)
         else:
-            category = session.query(Category).filter_by(id=category_id).one()
-            return render_template('new-item.html', category=category)
+            return redirect(url_for('showItems', category_id=category_id))
 
 
 @app.route('/catalogue/<int:category_id>/item/<int:item_id>/edit',
            methods=['GET', 'POST'])
 def editItem(category_id, item_id):
+    if 'username' not in login_session:
+        return redirect(url_for('showLogin'))
     with session_scope() as session:
         item = session.query(Item).filter_by(id=item_id).one()
         category = session.query(Category).filter_by(id=category_id).one()
-        if request.method == 'POST':
-            item.name = request.form['name']
-            item.description = request.form['description']
-            item.picture = request.form['picture']
-            session.add(item)
-            return redirect(url_for('showItems', category_id=category_id))
+        if item.user_id == login_session['user_id']:
+            if request.method == 'POST':
+                if login_session['state'] != request.form.get('_csrf_token'):
+                    abort(403)
+                item.name = request.form['name']
+                item.description = request.form['description']
+                item.picture = request.form['picture']
+                session.add(item)
+                return redirect(url_for('showItems', category_id=category_id))
+            else:
+                return render_template('edit-item.html', category=category,
+                                       item=item)
         else:
-            return render_template('edit-item.html', category=category,
-                                   item=item)
+            return redirect(url_for('showItems', category_id=category_id))
 
 
 @app.route('/catalogue/<int:category_id>/item/<int:item_id>/delete',
            methods=['GET', 'POST'])
 def deleteItem(category_id, item_id):
+    if 'username' not in login_session:
+        return redirect(url_for('showLogin'))
     with session_scope() as session:
-        if request.method == 'POST':
-            session.query(Item).filter_by(id=item_id).delete()
-            return redirect(url_for('showItems', category_id=category_id))
+        item = session.query(Item).filter_by(id=item_id).one()
+        if item.user_id == login_session['user_id']:
+            if request.method == 'POST':
+                if login_session['state'] != request.form.get('_csrf_token'):
+                    abort(403)
+                session.query(Item).filter_by(id=item_id).delete()
+                return redirect(url_for('showItems', category_id=category_id))
+            else:
+                item = session.query(Item).filter_by(id=item_id).one()
+                return render_template('delete-item.html', item=item)
         else:
-            item = session.query(Item).filter_by(id=item_id).one()
-            return render_template('delete-item.html', item=item)
+            return redirect(url_for('showItems', category_id=category_id))
 # END - CRUD operations for catalogue
 
 
@@ -153,6 +209,7 @@ def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
+    app.jinja_env.globals['csrf_token'] = getToken()
     return render_template('login.html', STATE=state)
 
 
@@ -234,10 +291,10 @@ def googleConnect():
     login_session['provider'] = 'google'
 
     # see if user exists, if it doesn't make a new one
-    #user_id = getUserID(data["email"])
-    # if not user_id:
-    #user_id = createUser(login_session)
-    #login_session['user_id'] = user_id
+    user_id = getUserID(data["email"])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
 
     output = ''
     output += '<h1>Welcome, '
@@ -247,8 +304,8 @@ def googleConnect():
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;'
     '-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    #flash("you are now logged in as %s" % login_session['username'])
-    print "done!"
+    flash("you are now logged in as %s" % login_session['username'])
+    # print "done!"
     return output
 
 
@@ -285,13 +342,57 @@ def signout():
         del login_session['username']
         del login_session['email']
         del login_session['picture']
-        #del login_session['user_id']
+        del login_session['user_id']
         del login_session['provider']
         flash("You have successfully been logged out.")
         return redirect(url_for('showCatagories'))
     else:
         flash("You were not logged in")
         return redirect(url_for('showCatagories'))
+
+
+def getToken():
+    if login_session['state']:
+        return login_session['state']
+
+# User Helper Functions
+
+
+def createUser(login_session):
+    with session_scope() as session:
+        newUser = User(name=login_session['username'], email=login_session[
+                       'email'], picture=login_session['picture'])
+        session.add(newUser)
+        user = session.query(User).filter_by(
+            email=login_session['email']).one()
+        return user.id
+
+
+def getUserInfo(user_id):
+    with session_scope() as session:
+        user = session.query(User).filter_by(id=user_id).one()
+        return user
+
+
+def getUserID(email):
+    try:
+        with session_scope() as session:
+            user = session.query(User).filter_by(email=email).one()
+            return user.id
+    except:
+        return None
+
+
+def isUserLoggedIn():
+    try:
+        if 'username' not in login_session:
+            print 'f'
+            return False
+        else:
+            return True
+    except:
+        return True
+
 
 # END User Authentication
 

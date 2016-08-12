@@ -1,4 +1,4 @@
-from database import Base, Category, Item
+from database import Base, Category, Item, User
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager

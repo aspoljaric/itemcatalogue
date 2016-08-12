@@ -7,6 +7,7 @@
     <p>Name:</p>
     <input type = 'text' size='30' name='name'>
     <input type = 'submit' value='Create'>
+    <input name=_csrf_token type=hidden value="{{ csrf_token }}">
     <a href = '{{ url_for('showCatagories') }}'>Cancel</a>
 </form>
 

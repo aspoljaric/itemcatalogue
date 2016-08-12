@@ -8,12 +8,21 @@ from sqlalchemy.orm import backref
 
 Base = declarative_base()
 
+class User(Base):
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key = True)
+    name = Column(String(255), nullable = False)
+    picture = Column(String(255))
+    email = Column(String(255), nullable = False)
+
 
 class Category(Base):
     __tablename__ = 'category'
 
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
 
     @property
     def serialize(self):
@@ -33,6 +42,8 @@ class Item(Base):
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(
         Category, backref=backref('children', cascade='all,delete'))
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
 
     @property
     def serialize(self):
@@ -44,6 +55,9 @@ class Item(Base):
             'picture': self.picture,
             'category_id': self.category_id,
             }
+
+
+
 
 engine = create_engine('sqlite:///categories.db')
 
