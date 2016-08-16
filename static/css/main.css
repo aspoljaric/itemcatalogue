@@ -1,0 +1,76 @@
+@media screen and (min-width: 945px) {
+    .container {
+        width: 945px;
+        margin: 0 auto;
+    }
+}
+
+
+body {
+    font-family: 'Lato', sans-serif;
+    color: #2d3c49;
+}
+
+
+p {
+    font-size: 16px;
+}
+
+
+h1 {
+    font-size: 55px;
+}
+
+
+h2 {
+    color: #7d97ad;
+    font-weight: 700;
+    font-size: 35px;
+}
+
+
+h3 {
+    color: #2d3c49;
+    font-weight: 800;
+    font-size: 20px;
+}
+
+
+h4 {
+
+}
+
+
+hr {
+    background-color: #7d97ad;
+    height: 2px;
+}
+
+
+.header-logo {
+    margin-top: 30px;
+}
+
+
+
+
+.category {
+    display: flex;
+    margin-top: -17px;
+    margin-left: 8px;
+}
+
+.category a {
+    font-size: 14px;
+}
+
+.category-top {
+    margin-bottom: 10px;
+}
+
+
+.category-all {
+    display: flex;
+}
+
+

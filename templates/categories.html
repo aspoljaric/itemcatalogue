@@ -1,27 +1,47 @@
-<html>
-<body>
+{% extends "base.html" %}
+{% block content %}
 
-<h1>Categories</h1>
+    <div class="row category-top">
+        <div class="col-md-6 text-left">
+            <h2>Categories</h2>
+        </div>
 
-<a href = '{{ url_for('newCategory') }}'>Create new catagory</a>
-<br>
-
-{% if categories %}
-    {% for category in categories %}
-    <a href = '{{ url_for('showItems', category_id=category.id)}}'>{{ category.name }}</a>
-    <br>
-    {% if category.user_id == loggedin_user_id %}
-    <a href = '{{ url_for('editCategory', category_id=category.id) }}'>Edit</a>
-    <br>
-    <a href = '{{ url_for('deleteCategory', category_id=category.id) }}'>Delete</a>
-    <br>
-    <br>
+    {% if loggedin_user_id %}
+        <div class="col-md-6 text-right">
+            <a href = '{{ url_for('newCategory') }}'>
+                <img src='/static/images/document-add-flat.png' alt='Create new catagory'/></a>
+        </div>
     {% endif %}
-    <br>
-    {% endfor %}
-{% else %}
-    <h3>No categories found!</h3>
-{% endif %}
+    </div>
 
-</body>
-</html>
+    {% if categories %}
+        <div>
+        {% for category in categories %}
+        <div class='category-all'>
+        <div class='category-bullet'>
+            <img src='/static/images/lift-icon.png'>
+        </div>
+
+        <div class='category'>
+
+        <a href = '{{ url_for('showItems', category_id=category.id)}}'><h3>{{ category.name }}<h3></a>
+        {% if category.user_id == loggedin_user_id %}
+            &nbsp; (
+            <a href = '{{ url_for('editCategory', category_id=category.id) }}'>
+                 Edit</a>
+            &nbsp;|&nbsp;
+            <a href = '{{ url_for('deleteCategory', category_id=category.id) }}'>
+                Delete</a>
+            )
+        {% endif %}
+        </div>
+
+    </div>
+        {% endfor %}
+    {% else %}
+        <h3>No categories found!</h3>
+        </div>
+    {% endif %}
+
+
+{% endblock %}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+        <link href="https://fonts.googleapis.com/css?family=Lato:100,300" rel="stylesheet">
+        <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+        <script type="text/javascript" src="/static/js/jquery-2.2.4.min.js"></script>
+        <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+        <script src="//apis.google.com/js/platform.js?onload=start"> </script>
+        <title>Catalogue</title>
+    </head>
+    <body>
+        <div class="container">
+          <div class="row header">
+            <header>
+                <div class="col-md-4 col-sm-4 header-logo">
+                    <a href='/'>
+                    <img class="img-responsive" src="/static/images/list-round-flat.png" alt="Catalogue Logo"></a></div>
+                <div class="col-md-8 col-sm-8 text-right header-text">
+                  <h1>Catalogue</h1>
+                  {%if 'username' not in session %}
+                        <a href="{{url_for('showLogin')}}"><h4>Login</h4></a>
+                    {% else %}
+                        <a href="{{url_for('signout')}}"><h4>Logout</h4></a>
+                   {% endif %}
+                </div>
+            </header>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+            <hr>
+            </div>
+          </div>
+          <div class="row">
+            <div id="content" class="col-md-12">
+                {% block content %}
+                {% endblock %}
+            </div>
+          </div>
+        </div>
+    </body>
+</html>

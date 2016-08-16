@@ -1,14 +1,20 @@
-<html>
-<body>
+{% extends "base.html" %}
+{% block content %}
 
-<h1>Are you sure you wish to delete {{ category.name }}?</h1>
+    <div class="row category-top">
+        <div class="col-md-11 text-left">
+            <h2>Are you sure you wish to delete <i>{{ category.name }}</i>?</h2>
+        </div>
+        <div class="col-md-1 text-right">
+            <a href = '{{ url_for('showCatagories') }}'>
+            <img src='/static/images/arrow-boxed-flat.png' alt='Back Arrow'></a>
+        </div>
+    </div>
 
-<form action='{{ url_for('deleteCategory', category_id=category.id) }}' method = 'post'>
-<input type='submit', value = 'Delete'>
-<input name=_csrf_token type=hidden value="{{ csrf_token }}">
-</form>
+    <form action='{{ url_for('deleteCategory', category_id=category.id) }}' method = 'post'>
+    <br>
+    <input type='submit' value='Delete'>
+    <input name=_csrf_token type=hidden value="{{ csrf_token }}">
+    </form>
 
-<a href = '{{ url_for('showCatagories') }}'>Cancel</a>
-
-</body>
-</html>
+{% endblock %}

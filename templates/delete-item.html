@@ -1,14 +1,13 @@
-<html>
-<body>
+{% extends "base.html" %}
+{% block content %}
 
-<h1>Are you sure you wish to delete {{ item.name }}?</h1>
+    <h1>Are you sure you wish to delete {{ item.name }}?</h1>
 
-<form action='{{ url_for('deleteItem', category_id=item.category_id, item_id=item.id) }}' method = 'post'>
-<input name=_csrf_token type=hidden value="{{ csrf_token }}">
-<input type='submit', value = 'Delete'>
-</form>
+    <form action='{{ url_for('deleteItem', category_id=item.category_id, item_id=item.id) }}' method = 'post'>
+    <input name=_csrf_token type=hidden value="{{ csrf_token }}">
+    <input type='submit', value = 'Delete'>
+    </form>
 
-<a href = '{{ url_for('showItems', category_id=item.category_id) }}'>Cancel</a>
+    <a href = '{{ url_for('showItems', category_id=item.category_id) }}'>Cancel</a>
 
-</body>
-</html>
+{% endblock %}

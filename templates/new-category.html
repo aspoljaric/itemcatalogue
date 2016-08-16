@@ -1,15 +1,23 @@
-<html>
-<body>
+{% extends "base.html" %}
+{% block content %}
 
-<h1>New Category</h1>
+    <div class="row category-top">
+        <div class="col-md-6 text-left">
+            <h2>New Category</h2>
+        </div>
+        <div class="col-md-6 text-right">
+            <a href = '{{ url_for('showCatagories') }}'>
+            <img src='/static/images/arrow-boxed-flat.png' alt='Back Arrow'></a>
+        </div>
+    </div>
 
-<form action='{{ url_for('newCategory') }}' method='post'>
-    <p>Name:</p>
-    <input type = 'text' size='30' name='name'>
-    <input type = 'submit' value='Create'>
-    <input name=_csrf_token type=hidden value="{{ csrf_token }}">
-    <a href = '{{ url_for('showCatagories') }}'>Cancel</a>
-</form>
+    <form action='{{ url_for('newCategory') }}' method='post'>
+        <p>Name:
+        <input type = 'text' size='30' name='name'>
+        </p>
+        <br>
+        <input type='submit' value='Create'>
+        <input name=_csrf_token type=hidden value="{{ csrf_token }}">
+    </form>
 
-</body>
-</html>
+{% endblock %}

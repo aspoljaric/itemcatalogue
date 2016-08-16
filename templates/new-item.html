@@ -1,19 +1,18 @@
-<html>
-<body>
+{% extends "base.html" %}
+{% block content %}
 
-<h1>New Item</h1>
+    <h1>New Item</h1>
 
-<form action='{{ url_for('newItem', category_id=category.id) }}' method='post'>
-    <p>Name:</p>
-    <input type = 'text' size='30' name='name'>
-    <p>Description:</p>
-    <input type = 'text' size='30' name='description'>
-    <p>Picture:</p>
-    <input type='file' name='picture' accept='image/*'>
-    <input name=_csrf_token type=hidden value="{{ csrf_token }}">
-    <input type = 'submit' value='Create'>
-    <a href = '{{ url_for('showItems', category_id=category.id) }}'>Cancel</a>
-</form>
+    <form action='{{ url_for('newItem', category_id=category.id) }}' method='post'>
+        <p>Name:</p>
+        <input type = 'text' size='30' name='name'>
+        <p>Description:</p>
+        <input type = 'text' size='30' name='description'>
+        <p>Picture:</p>
+        <input type='file' name='picture' accept='image/*'>
+        <input name=_csrf_token type=hidden value="{{ csrf_token }}">
+        <input type = 'submit' value='Create'>
+        <a href = '{{ url_for('showItems', category_id=category.id) }}'>Cancel</a>
+    </form>
 
-</body>
-</html>
+{% endblock %}
