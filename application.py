@@ -13,7 +13,6 @@ import requests
 app = Flask(__name__)
 
 
-
 # CRUD operations for catalogue
 @app.route('/')
 @app.route('/catalogue')
@@ -39,6 +38,7 @@ def newCategory():
             newCategory = Category(
                 name=request.form['name'], user_id=login_session['user_id'])
             session.add(newCategory)
+            flash('New Category "%s" Created.' % request.form['name'])
             return redirect(url_for('showCatagories'))
         else:
             return render_template('new-category.html')
@@ -56,6 +56,7 @@ def editCategory(category_id):
                     abort(403)
                 category.name = request.form['name']
                 session.add(category)
+                flash('Category "%s" Has Been Updated.' % category.name)
                 return redirect(url_for('showCatagories'))
             else:
                 return render_template('edit-category.html', category=category)
@@ -75,6 +76,7 @@ def deleteCategory(category_id):
                     abort(403)
                 if category is not None:
                     session.delete(category)
+                    flash('Category "%s" Has Been Deleted.' % category.name)
                     return redirect(url_for('showCatagories'))
             else:
                 return render_template('delete-category.html',
@@ -113,9 +115,8 @@ def newItem(category_id):
                                description=request.form['description'],
                                category_id=category_id,
                                user_id=login_session['user_id'])
-                #picture_url = request.values['picture']
-                # newItem.picture.from_file(urlopen(picture_url))
                 session.add(newItem)
+                flash('New Item "%s" Created.' % request.form['name'])
                 return redirect(url_for('showItems', category_id=category_id))
             else:
                 category = session.query(
@@ -139,8 +140,8 @@ def editItem(category_id, item_id):
                     abort(403)
                 item.name = request.form['name']
                 item.description = request.form['description']
-                item.picture = request.form['picture']
                 session.add(item)
+                flash('Item "%s" Has Been Updated.' % item.name)
                 return redirect(url_for('showItems', category_id=category_id))
             else:
                 return render_template('edit-item.html', category=category,
@@ -161,6 +162,7 @@ def deleteItem(category_id, item_id):
                 if login_session['state'] != request.form.get('_csrf_token'):
                     abort(403)
                 session.query(Item).filter_by(id=item_id).delete()
+                flash('Item "%s" Has Been Deleted.' % item.name)
                 return redirect(url_for('showItems', category_id=category_id))
             else:
                 item = session.query(Item).filter_by(id=item_id).one()
@@ -296,17 +298,8 @@ def googleConnect():
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
-
-    output = ''
-    output += '<h1>Welcome, '
-    output += login_session['username']
-    output += '!</h1>'
-    output += '<img src="'
-    output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;'
-    '-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("you are now logged in as %s" % login_session['username'])
-    # print "done!"
+    flash("You have successfully been logged in.")
+    output = 'OK'
     return output
 
 
@@ -382,18 +375,6 @@ def getUserID(email):
             return user.id
     except:
         return None
-
-
-def isUserLoggedIn():
-    try:
-        if 'username' not in login_session:
-            print 'f'
-            return False
-        else:
-            return True
-    except:
-        return True
-
 
 # END User Authentication
 

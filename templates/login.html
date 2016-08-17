@@ -1,19 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
 
-  <div id="signInButton">
+<h2>Login</h2>
+
+<br>
+<div class="row">
+  <div class="col-md-4 text-left">
+    Please login with your Google account:
+  </div>
+  <div class="col-md-8 text-left">
+      <div id="signInButton">
     <span class="g-signin"
             data-scope="openid email"
             data-clientid="385075612489-vqap54od740ilifehpt6lokmbtcfe70d.apps.googleusercontent.com"
             data-redirecturi="postmessage"
             data-accesstype="offline"
             data-cookiepolicy="single_host_origin"
-            data-callback="signInCallback"
-            data-approvalprompt="force">
+            data-callback="signInCallback">
     </span>
   </div>
-
-<!-- disable data-approvalprompt="force" for prod -->
+  </div>
+</div>
 
   <script>
   function signInCallback(authResult) {

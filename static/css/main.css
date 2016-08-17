@@ -9,6 +9,7 @@
 body {
     font-family: 'Lato', sans-serif;
     color: #2d3c49;
+    font-size: 16px;
 }
 
 
@@ -36,11 +37,6 @@ h3 {
 }
 
 
-h4 {
-
-}
-
-
 hr {
     background-color: #7d97ad;
     height: 2px;
@@ -48,24 +44,23 @@ hr {
 
 
 .header-logo {
-    margin-top: 30px;
+    margin: 30px 0 0 0;
 }
-
-
 
 
 .category {
     display: flex;
-    margin-top: -17px;
-    margin-left: 8px;
+    margin: -17px 0 0 8px;
 }
+
 
 .category a {
     font-size: 14px;
 }
 
+
 .category-top {
-    margin-bottom: 10px;
+    margin: 0 0 10px 0;
 }
 
 
@@ -74,3 +69,36 @@ hr {
 }
 
 
+.item {
+    display: flex;
+    margin: -17px 0 0 8px;
+}
+
+
+.item a {
+    font-size: 14px;
+}
+
+
+.item-description {
+    margin: 0 0 18px 0;
+}
+
+
+.item-all {
+    display: flex;
+}
+
+
+.item-top {
+    margin: 0 0 10px 0;
+}
+
+
+.messages {
+    background-color: #35aadc;
+    height: 22px;
+    margin: 0 0 10px 0;
+    text-align: center;
+    color: white;
+}

@@ -1,18 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <h1>Edit Item</h1>
+    <div class="row item-top">
+        <div class="col-md-6 text-left">
+            <h2>Edit Item in <i>{{ category.name }}</i></h2>
+        </div>
+        <div class="col-md-6 text-right">
+            <a href = '{{ url_for('showItems', category_id=category.id) }}'>
+            <img src='/static/images/arrow-boxed-flat.png' alt='Back Arrow'></a>
+        </div>
+    </div>
 
-    <form action='#' method='post'>
-        <p>Name:</p>
+    <form action='{{ url_for('editItem', category_id=category.id, item_id=item.id) }}' method='post'>
+        <p>Name:
         <input type = 'text' size='30' name='name' placeholder='{{ item.name}}'>
+        </p>
         <p>Description:</p>
-        <input type = 'text' size='30' name='description' placeholder='{{ item.description}}'>
-        <p>Picture:</p>
-        <input type='file' name='picture' accept='image/*'>
+        <textarea name="description" rows="10" cols="70" placeholder='{{ item.description}}'></textarea>
+        <br><br>
+        <input type = 'submit' value='Save'>
         <input name=_csrf_token type=hidden value="{{ csrf_token }}">
-        <input type = 'submit' value='Edit'>
-        <a href = '{{ url_for('showItems', category_id=item.category_id) }}'>Cancel</a>
     </form>
 
 {% endblock %}

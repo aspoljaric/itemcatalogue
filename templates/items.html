@@ -1,27 +1,49 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <h1>{{ category.name }} Items</h1>
-    <a href="{{ url_for('showCatagories') }}"> Back </a>
-
-    {% if category.user_id == loggedin_user_id %}
-        <a href = '{{ url_for('newItem', category_id=category_id) }}'>Create new item</a>
-    {% endif %}
+    <div class="row category-top">
+        <div class="col-md-10 text-left">
+            <h2><i>{{ category.name }}</i> Items</h2>
+        </div>
+        {% if category.user_id == loggedin_user_id %}
+            <div class="col-md-1 text-right">
+                <a href = '{{ url_for('newItem', category_id=category_id) }}'>
+                    <img src='/static/images/document-add-flat.png' alt='Create new item'/></a>
+            </div>
+            <div class="col-md-1 text-right">
+                <a href = '{{ url_for('showCatagories') }}'>
+                <img src='/static/images/arrow-boxed-flat.png' alt='Back Arrow'></a>
+            </div>
+        {% else %}
+            <div class="col-md-2 text-right">
+            <a href = '{{ url_for('showCatagories') }}'>
+            <img src='/static/images/arrow-boxed-flat.png' alt='Back Arrow'></a>
+            </div>
+        {% endif %}
+    </div>
     <br>
 
     {% if items %}
         {% for item in items %}
-        {{ item.name }}
-        {% if item.user_id == loggedin_user_id %}
-        <br>
-        <a href = '{{ url_for('editItem', category_id=item.category.id, item_id=item.id) }}'>Edit</a>
-        <br>
-        <a href = '{{ url_for('deleteItem', category_id=item.category.id, item_id=item.id) }}'>Delete</a>
-        <br>
-        <br>
-        {% endif %}
-        <img src="{{ item.picture }}"/>
+        <div class='item-all'>
+        <div class='item-bullet'>
+            <img src='/static/images/lift-icon.png'>
+        </div>
+        <div class='item'>
+            <h3>{{ item.name }}<h3>
+            {% if item.user_id == loggedin_user_id %}
+            &nbsp; (
+            <a href = '{{ url_for('editItem', category_id=item.category.id, item_id=item.id) }}'>Edit</a>
+            &nbsp;|&nbsp;
+            <a href = '{{ url_for('deleteItem', category_id=item.category.id, item_id=item.id) }}'>Delete</a>
+            )
+            {% endif %}
+        </div>
 
+        </div>
+        <div class='item-description'>
+            {{ item.description }}
+        </div>
         {% endfor %}
     {% else %}
         <h3>No items found!</h3>

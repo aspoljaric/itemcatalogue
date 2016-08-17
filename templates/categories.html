@@ -23,7 +23,6 @@
         </div>
 
         <div class='category'>
-
         <a href = '{{ url_for('showItems', category_id=category.id)}}'><h3>{{ category.name }}<h3></a>
         {% if category.user_id == loggedin_user_id %}
             &nbsp; (
